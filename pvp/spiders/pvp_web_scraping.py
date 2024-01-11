@@ -2,11 +2,18 @@
 
 import scrapy
 import os
-
+import random
 
 class ProceduraSpider(scrapy.Spider):
     name="view"
 
+    custom_settings = {
+        'COOKIES_ENABLED': False,
+        'DOWNLOAD_DELAY': random.uniform(1, 5),
+        'DOWNLOAD_TIMEOUT': 15, #: The maximum time (in seconds) that Scrapy will wait for a response before considering a request as failed.
+        'CONCURRENT_REQUESTS': 1, #The maximum number of concurrent requests that Scrapy should process.
+    }
+    
     #Take parameters and handle possible errors
     def __init__(self, tribunale='', procedura='', anno='', *args, **kwargs):
         super(ProceduraSpider, self).__init__(*args, **kwargs)
@@ -14,26 +21,6 @@ class ProceduraSpider(scrapy.Spider):
         self.procedura = procedura
         self.tribunale = tribunale
 
-        ''' 
-        # Check year
-        try:
-            self.anno = int(anno)
-            if len(str(self.anno)) != 4:
-                raise ValueError("L'anno deve avere 4 numeri.")
-        except ValueError:
-            raise ValueError("L'anno deve essere un numero intero (sono consentiti solo numeri).")
-
-        # Check procedura
-        try:
-            self.procedura = int(procedura)
-        except ValueError:
-            raise ValueError("Il numero di procedura deve essere numerico.")
-
-        # Check tribunale
-        self.tribunale = tribunale
-        if self.tribunale is None:
-            raise ValueError("Il tribunale non corrisponde a uno esistente.")
-        '''
     #get URL ready    
     def start_requests(self):
         url = f"https://pvp.giustizia.it/pvp/it/risultati_ricerca.page?tipo_bene=immobili&geo=raggio&indirizzo=&raggio=25&lat=&lng=&tribunale={self.tribunale}&procedura={self.procedura}&anno={self.anno}&prezzo_da=&prezzo_a=&idInserzione=&ricerca_libera="
