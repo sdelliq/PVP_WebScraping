@@ -3,7 +3,9 @@
 import scrapy
 import os
 import random
+import datetime
 
+today= datetime.date.today().strftime("%d_%m_%Y")
 class ProceduraSpider(scrapy.Spider):
     name="view"
 
@@ -29,7 +31,7 @@ class ProceduraSpider(scrapy.Spider):
 
     def parse(self, response):
         # Check if the 'output' directory exists, create it if not
-        output_directory = 'output'
+        output_directory = os.path.join('output', today)
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
 
